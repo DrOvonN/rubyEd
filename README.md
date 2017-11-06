@@ -1,8 +1,6 @@
 # RubyEd
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rubyEd`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This small gem create a [yEd](http://www.yworks.com/products/yed) compatible graph file.
 
 ## Installation
 
@@ -22,13 +20,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This gem is for developer or studens who want to visualization (in a fast way) there Graphs with yEd.
+Start with creating a new Graph object. Each Graph object needs one Array of Edge Arrays. 
+A Edge Array is a simple Array with three informations: name of the two nodes and the weight of the edge. 
+The Graph class have the special instance methode to generate the equivalent Graph File for yEd.
 
-## Development
+```ruby
+require 'rubyEd'
+g1 = Graph.new([['Node1','Node2',weight_of_edge1],...,['NodeX','NodeY',weight_of_edgeX]
+g1.to_graphml(filename,options={})
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+$ direct graph		| :directed => 'standard'
+$ undirected graph	| :directed => 'none'
+$ shape of Nodes	| :shape => 'rectangle' / yEd supported shapes
+$ color of Nodes	| :color => '#000000' / '#six_hex_digits'  
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
