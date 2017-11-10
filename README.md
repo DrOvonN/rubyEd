@@ -10,7 +10,7 @@ Add this line to your application's Gemfile:
 gem 'rubyEd'
 ```
 
-And then execute:
+And then execute: [NOT YET]
 
     $ bundle
 
@@ -31,10 +31,10 @@ g1 = Graph.new([['Node1','Node2',weight_of_edge1],...,['NodeX','NodeY',weight_of
 g1.to_graphml(filename,options={})
 ```
 
-$ direct graph		| :directed => 'standard'
-$ undirected graph	| :directed => 'none'
-$ shape of Nodes	| :shape => 'rectangle' / yEd supported shapes
-$ color of Nodes	| :color => '#000000' / '#six_hex_digits'  
+	direct graph		```ruby :directed => 'standard' ```
+	undirected graph	```ruby :directed => 'none' ```
+	shape of Nodes	 	```ruby :shape => 'rectangle' / yEd supported shapes ```
+	color of Nodes		```ruby :color => '#000000' / '#six_hex_digits' ```
 
 
 ## Contributing
