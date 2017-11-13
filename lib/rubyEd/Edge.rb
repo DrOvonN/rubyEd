@@ -7,11 +7,11 @@ require_relative 'Node.rb'
 class Edge
 	@@size = 0
 	
-	def initialize(source,target,length)
+	def initialize(source,target,weight)
 		# @source and @target are Nodes
 		@source = source
 		@target = target
-		@length	= length
+		@weight	= weight
 		@id		= @@size
 		@@size	= @@size + 1
 	end
@@ -32,16 +32,22 @@ class Edge
 		@target
 	end
 	
-	def get_length
-		@length
+	def get_weight
+		@weight
 	end
 
 	# nice methode to check up a node
 	def include?(node)
-		(@source.get_name == node) || (@target.get_name == node)
+		if @source.get_name == node
+			return @source
+		elsif @target.get_name == node
+			return @target
+		else
+			return false
+		end	
 	end	
 
 	def to_str
-		"#{@source} --{#{@length}}--> #{@target}"
+		"#{@source} --{#{@weight}}--> #{@target}"
 	end
 end

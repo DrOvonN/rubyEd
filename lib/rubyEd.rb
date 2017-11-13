@@ -1,36 +1,41 @@
-require "rubyEd/version"
-require	"rubyEd/Node.rb"
-require	"rubyEd/Edge.rb"
+require "./rubyEd/version"
+require	"./rubyEd/Node"
+require	"./rubyEd/Edge"
 
 module RubyEd
 
 		##
 		# A simple graph class with a writer methode (.graphml).
 		# To create an object: Graph.new([['Node1','Node2',weight_of_edge1],...,['NodeX','NodeY',weight_of_edgeX]]
-		
-  class Graph
-	def initialize(edge_list=[]) #[[1,2,l1],[1,3,l2]]
+ class Graph
+	def initialize(edge_list=[])
+		puts "rubyEd version #{VERSION}"
 		@adjacency_list = Array.new
-		source = ''
-		target = ''
-		
 		# the graph is represented as a array of edges
-		# Every edge includes two nodes (source and target) and the weigtht of the edge.
+		# Every edge includes two nodes (source and target) and the weight of the edge.
 		edge_list.each do |edge|
-			# create a new node if the node is new
-			unless @adjacency_list.index { |item| item.include?(edge[0]) }
+			source = nil
+			target = nil
+			# set the source and the target as a node object of the same node name
+			# if the names of the searched nodes not given create a new node object  
+			# every node will create only one time
+			@adjacency_list.select do |item|
+				source ||= item.include?(edge[0])
+				target ||= item.include?(edge[1])
+			end
+			unless source
 				source = Node.new(edge[0])
-			else
-				# if the node existing find and set them
-				source = @adjacency_list.select { |item| item.include?(edge[0]) }
-			end
-			unless @adjacency_list.index { |item| item.include?(edge[1])}
+				puts "#{Time.new}: add Node \"#{edge[0]}\""
+			end	
+			unless target
 				target = Node.new(edge[1])
-			else
-				target = @adjacency_list.select { |item| item.include?(edge[1]) }
-			end
+				puts "#{Time.new}: add Node \"#{edge[1]}\""
+			end	
+			# an adjacency_list is array of edges an targets and sources are still node objects	
 			@adjacency_list << Edge.new(source,target,edge[2])
+			puts "#{Time.new}: add Edge (\"#{edge[0]}\",\"#{edge[1]}\",weight=#{edge[2]})"
 		end
+		puts "#{Time.new}: add #{Node.size} Nodes and #{Edge.size} Edges"
 	end
 
 	def num_of_nodes
@@ -43,9 +48,10 @@ module RubyEd
 	
 	def to_graphml(file_name='',options={})
 		if file_name == ''
-			puts "filename is missing"
+			puts "#{Time.new}: the programm stops (filename is missing)"
 			exit
 		end
+		puts "#{Time.new}: create a string for #{file_name}.graphml"
 		# Necessary positions for the nodes creating
 		position_x	= 0
 		position_y	= 0
@@ -56,7 +62,7 @@ module RubyEd
 		shape_color	= ''
 		# set the options for the representation
 		if options[:directed]
-			# standard is directed
+			# standard means directed
 			directed	= 'standard'
 		else
 			directed	= 'none'
@@ -68,6 +74,7 @@ module RubyEd
 		if options[:color] && options[:color].match(/#[a-fA-F0-9]{6}/)
 			shape_color = options[:color]
 		else
+			# yEd standard color (yellow)
 			shape_color	= '#FFCC00'	
 		end
 		# this string shows the typical graphml head
@@ -81,7 +88,7 @@ module RubyEd
 			xmlns:y=\"http://www.yworks.com/xml/graphml\" 
 			xmlns:yed=\"http://www.yworks.com/xml/yed/3\" 
 			xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd\">
-			<!--Created with RubyEd-->
+			<!--Created with RubyEd Version #{VERSION}-->
 			<key attr.name=\"description\" attr.type=\"string\" for=\"graph\" id=\"d0\"/>
 			<key for=\"port\" id=\"d1\" yfiles.type=\"portgraphics\"/>
 			<key for=\"port\" id=\"d2\" yfiles.type=\"portgeometry\"/>
@@ -97,8 +104,6 @@ module RubyEd
 			<data key=\"d0\"/>"
 		graphml_nodes	= ''
 		graphml_edges 	= ''
-		# to change! 
-		edge_id 		= 0
 		node_list		= Array.new
 		@adjacency_list.each do |edge|
 			# create (write in the graphml) nodes one time 
@@ -113,8 +118,7 @@ module RubyEd
 				position_x = position_x + 1
 				node_list << edge.get_target
 			end	
-			graphml_edges <<  get_edge_layout(edge_id,position_x,edge.get_source.get_id,edge.get_target.get_id,edge.get_length,directed)
-			edge_id = edge_id + 1
+			graphml_edges <<  get_edge_layout(edge.get_id,position_x,edge.get_source,edge.get_target,edge.get_weight,directed)
 			if position_x % tmp_y == 0
 				position_y = position_y + 1
 				position_x = 0
@@ -122,7 +126,8 @@ module RubyEd
 		end
 		# write the footer
 		File.write(file_name << '.graphml' ,graphml_head << graphml_nodes << graphml_edges << "\n</graph>\n<data key=\"d7\">\n\t\t<y:Resources/>\n\t</data>\n</graphml>")
-	return true
+		puts "#{Time.new}: create #{file_name} with #{Node.size} Nodes and #{Edge.size} Edges"
+		return true
 	end
 
 	# write an enhanced string
@@ -132,23 +137,23 @@ module RubyEd
 	# shape_color	-> String
 	# node			-> Node
 	private def get_node_layout(position_x,position_y,shape_node,shape_color,node)
-"<node id=\"n#{note.get_id}\">
+"<node id=\"n#{node.get_id}\">
 	<data key=\"d5\"/>
 	<data key=\"d6\">
 		<y:ShapeNode>
-		<y:Geometry height=\"30.0\" width=\"30.0\" x=\"#{position_x*60}\" y=\"#{position_y*60}\"/>
+		<y:Geometry height=\"30.0\" width=\"30.0\" x=\"#{position_x*100}\" y=\"#{position_y*100}\"/>
 		<y:Fill color=\"#{shape_color}\" transparent=\"false\"/>
-		<y:BorderStyle color=\"#000000\" 
-			raised=\"false\" 
-			type=\"line\" 
+		<y:BorderStyle color=\"#000000\"
+			raised=\"false\"
+			type=\"line\"
 			width=\"1.0\"/>
-		<y:NodeLabel alignment=\"center\" 
-			autoSizePolicy=\"content\" 
-			fontFamily=\"Dialog\" 
-			fontSize=\"12\" 
-			fontStyle=\"plain\" 
-			hasBackgroundColor=\"false\" 
-			hasLineColor=\"false\" 
+		<y:NodeLabel alignment=\"center\"
+			autoSizePolicy=\"content\"
+			fontFamily=\"Dialog\"
+			fontSize=\"12\"
+			fontStyle=\"plain\"
+			hasBackgroundColor=\"false\"
+			hasLineColor=\"false\"
 			height=\"10\" 
 			horizontalTextPosition=\"center\" 
 			iconTextGap=\"4\" 
@@ -186,8 +191,8 @@ module RubyEd
 	# target_node	-> Node
 	# edge_length	-> Fixnum
 	# directed		-> String
-	private def get_edge_layout(edge_id,position_x,source_node,target_node,edge_length,directed)
-"<edge id=\"e#{edge_id}\" source=\"#{source_node.get_id}\" target=\"#{target_node.get_id}\">
+	private def get_edge_layout(edge_id,position_x,source_node,target_node,edge_weight,directed)
+"<edge id=\"e#{edge_id}\" source=\"n#{source_node.get_id}\" target=\"n#{target_node.get_id}\">
       <data key=\"d9\"/>
       <data key=\"d10\">
         <y:PolyLineEdge>
@@ -204,12 +209,14 @@ module RubyEd
           	hasLineColor= \"false\" 
           	height=\"18.701171875\" 
           	horizontalTextPosition=\"center\" 
-          	iconTextGap=\"4\" modelName=\"custom\" 
+          	iconTextGap=\"4\" modelName=\"side_slider\" 
           	preferredPlacement=\"anywhere\" ratio=\"0.5\" 
           	textColor=\"#000000\" verticalTextPosition=\"bottom\" 
-          	visible=\"true\" width=\"#{2*(edge_length.size)}\" 
-          	x=\"0.0\" y=\"0.0\">#{edge_length}<y:LabelModel>
-              <y:SmartEdgeLabelModel autoRotationEnabled=\"false\" defaultAngle=\"0.0\" defaultDistance=\"10.0\"/>
+          	visible=\"true\" width=\"#{2*(edge_weight.size)}\" 
+          	x=\"0.0\" y=\"0.0\">#{edge_weight}<y:LabelModel>
+              <y:SmartEdgeLabelModel autoRotationEnabled=\"false\" 
+              	defaultAngle=\"0.0\" 
+              	defaultDistance=\"10.0\"/>
             </y:LabelModel>
             <y:ModelParameter>
               <y:SmartEdgeLabelModelParameter angle=\"0.0\" distance=\"30.0\" distanceToCenter=\"true\" position=\"right\" ratio=\"0.5\" segment=\"0\"/>

@@ -27,14 +27,14 @@ The Graph class have the special instance methode to generate the equivalent Gra
 
 ```ruby
 require 'rubyEd'
-g1 = Graph.new([['Node1','Node2',weight_of_edge1],...,['NodeX','NodeY',weight_of_edgeX]
+g1 = RubyEd::Graph.new([['Node1','Node2',weight_of_edge1],...,['NodeX','NodeY',weight_of_edgeX]
 g1.to_graphml(filename,options={})
 ```
 
-	direct graph		```ruby :directed => 'standard' ```
-	undirected graph	```ruby :directed => 'none' ```
-	shape of Nodes	 	```ruby :shape => 'rectangle' / yEd supported shapes ```
-	color of Nodes		```ruby :color => '#000000' / '#six_hex_digits' ```
+	direct graph		 :directed => 'standard'
+	undirected graph	 :directed => 'none'
+	shape of Nodes	 	 :shape => 'rectangle' / yEd supported shapes
+	color of Nodes		 :color => '#000000' / '#six_hex_digits'
 
 
 ## Contributing
