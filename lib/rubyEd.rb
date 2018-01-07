@@ -191,7 +191,7 @@ module RubyEd
 	# target_node	-> Node
 	# edge_length	-> Fixnum
 	# directed		-> String
-	private def get_edge_layout(edge_id,position_x,source_node,target_node,edge_weight,directed)
+	private def get_edge_layout(edge_id,source_node,target_node,edge_weight,directed)
 "<edge id=\"e#{edge_id}\" source=\"n#{source_node.get_id}\" target=\"n#{target_node.get_id}\">
       <data key=\"d9\"/>
       <data key=\"d10\">
