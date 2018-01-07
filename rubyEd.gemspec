@@ -6,12 +6,11 @@ require "rubyEd/version"
 Gem::Specification.new do |spec|
   spec.name          = "rubyEd"
   spec.version       = RubyEd::VERSION
-  spec.authors       = ["TODO: Write your name"]
-  spec.email         = ["TODO: Write your email address"]
+  spec.authors       = ["DrOvonN"]
+  spec.email         = ["grossovonn@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{You can create a fine graph(-file) for yEd.}
+  spec.homepage      = "https://github.com/DrOvonN/rubyEd."
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
